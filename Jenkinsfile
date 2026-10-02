@@ -1,3 +1,4 @@
+@Library ('java-shared-lib') _
 pipeline {
     agent any
     
@@ -16,21 +17,28 @@ pipeline {
             choices: ['package', 'install', 'clean compile'], 
             description: 'Select the Maven lifecycle stage to run'
         )
+        string(
+             name: 'Git_URL', 
+            defaultValue: 'https://github.com/jyothibio84-glitch/java_application_demo.git', 
+            description: 'The Git url you want to clone and build'
+        )
     }
 
     stages {
         stage('Check Out') {
             steps {
-                // Injected the BRANCH_NAME parameter securely using string interpolation
-                git branch: "${params.BRANCH_NAME}", 
-                    url: 'https://github.com/jyothibio84-glitch/java_application_demo.git'
+              gitcheckout(
+                  branch: "${params.BRANCH_NAME}",
+                    url: "${params.Git_URL}"
+              )
             }
         }
         
         stage('Build') {
             steps {
-                // Injected the MAVEN_GOAL parameter into your shell command
-                sh "mvn clean ${params.MAVEN_GOAL}"
+              runMaven(
+                    goal: "${params.MAVEN_GOAL}"
+                )
             }
         }
     }

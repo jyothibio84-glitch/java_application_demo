@@ -36,7 +36,7 @@ pipeline {
         
         stage('Build') {
             steps {
-              runMaven(
+              runmaven(
                     goal: "${params.MAVEN_GOAL}"
                 )
             }
